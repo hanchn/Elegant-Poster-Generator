@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精美海报</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+
+        .poster-container {
+            position: relative;
+            width: 800px;
+            height: 1200px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: none;
+        }
+
+        .poster-container.active {
+            display: block;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: blur(20px) brightness(0.5);  /* 增加模糊度，降低亮度 */
+            transform: scale(1.1);
+        }
+
+        .content {
+            position: relative;
+            padding: 40px;
+            color: #ffffff;
+            height: calc(100% - 80px);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);  /* 增强文字阴影 */
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 0;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);  /* 增强标题阴影效果 */
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .description {
+            font-size: 32px;
+            line-height: 1.8;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);  /* 增强文字阴影效果 */
+            text-align: left;
+            letter-spacing: 1px;
+            height: 100%;
+            overflow: hidden;
+            padding-bottom: 20px;
+            font-weight: 500;  /* 增加字重 */
+        }
+
+        .highlight-box {
+            background-color: rgba(255, 255, 255, 0.08);  /* 降低透明度 */
+            backdrop-filter: blur(25px);  /* 增加毛玻璃效果 */
+            -webkit-backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 15px;
+            height: calc(100% - 40px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);  /* 增强阴影效果 */
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .description {
+            font-size: 32px;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            letter-spacing: 1px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .highlight-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .control-button:hover {
+            background-color: #45a049;
+        }
+
+        @media screen and (max-width: 768px) {
+            .poster-container {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 2/3;
+            }
+            
+            .title {
+                font-size: 36px;
+            }
+            
+            .description {
+                font-size: 24px;
+            }
+
+            .highlight-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 配置对象
+        const config = {
+            title: "5月21日 A股市场消息面播报",
+            content: `今天是2025年5月21日，星期三，A股延续震荡向上走势，三大指数全线收涨。上证指数上涨0.21%，收于3387点；深证成指上涨0.44%，报10294点；创业板指数涨幅0.83%，收在2058点，北证50继续走高，日内涨幅0.39%，再度刷新历史新高。
+
+市场成交维持高位，两市合计成交金额约1.21万亿元，资金轮动活跃，结构性机会仍然突出。
+
+从消息面来看，今日最大的利好来自固态电池板块。国轩高科在全球科技大会上重磅发布六款固态电池新品，并宣布其位于阿根廷的0.2GWh中试线建成，成为国内首个海外固态产线落地的企业，引发资本市场强烈反应。金龙羽、领湃科技等个股涨停，带动整个固态电池概念板块全面走强。
+
+贵金属方向也受到地缘局势与避险情绪的提振。国际金价持续走高，黄金板块同步爆发，莱绅通灵、西部黄金、四川黄金等涨势明显，贵金属ETF涨幅领先。
+
+医药板块继续延续强势表现，三生国健再度涨停，创新药和重组蛋白方向获得主力资金持续介入。
+
+新能源汽车板块方面，中共中央政策发声，强调公务用车优先采购国产新能源车，江淮汽车盘中大涨超8%，带动整车、三电系统联动反弹。
+
+资金面方面，固态电池、新能源车和贵金属成为今日三大主力资金净流入方向。与此同时，高位题材如军工、航运、半导体板块出现明显回撤，成飞集成跌停，存储芯片方向大幅调整，显示高位风险释放正在进行。
+
+宏观层面，央行LPR降息后，市场继续消化宽松预期。国家发改委与工信部明确将在6月底前集中落地一批"稳增长、稳就业"政策措施，覆盖制造业投资、消费补贴、数字经济和民营企业融资等方向，形成政策共振预期。
+
+总结来看，今日A股维持平稳震荡格局，固态电池、汽车、黄金、医药成为明确主线。短线操作建议顺应资金逻辑参与热点主线轮动，同时控制仓位，规避高位退潮题材的剧烈调整。`
+        };
+
+        // 智能分页函数
+        function smartSplitContent(text) {
+            const containerHeight = 1200; // 海报高度
+            const titleHeight = 100; // 标题区域高度
+            const padding = 80; // 上下内边距总和
+            const lineHeight = 1.8; // 行高
+            const fontSize = 32; // 字体大小
+            
+            // 计算每页可容纳的字符数
+            const availableHeight = containerHeight - titleHeight - padding;
+            const charsPerLine = Math.floor(720 / fontSize); // 考虑容器宽度和字体大小
+            const linesPerPage = Math.floor(availableHeight / (fontSize * lineHeight));
+            const charsPerPage = charsPerLine * linesPerPage;
+
+            // 分割段落
+            const paragraphs = text.split('\n\n').filter(p => p.trim());
+            const pages = [];
+            let currentPage = [];
+            let currentLength = 0;
+
+            paragraphs.forEach(paragraph => {
+                if (currentLength + paragraph.length > charsPerPage && currentPage.length > 0) {
+                    pages.push(currentPage.join('\n\n'));
+                    currentPage = [];
+                    currentLength = 0;
+                }
+                currentPage.push(paragraph);
+                currentLength += paragraph.length;
+            });
+
+            if (currentPage.length > 0) {
+                pages.push(currentPage.join('\n\n'));
+            }
+
+            return pages;
+        }
+
+        // 创建海报页面
+        function createPosterPage(content, index) {
+            const poster = document.createElement('div');
+            poster.className = 'poster-container' + (index === 0 ? ' active' : '');
+            poster.id = `poster-${index}`;
+            
+            poster.innerHTML = `
+                <img src="bg.png" alt="背景图片" class="background">
+                <div class="content">
+                    <h1 class="title">${config.title}</h1>
+                    <div class="highlight-box">
+                        <div class="description">${content}</div>
+                    </div>
+                </div>
+            `;
+            
+            return poster;
+        }
+
+        // 页面控制
+        let currentPage = 0;
+        let totalPages = 1;
+
+        function showPage(index) {
+            document.querySelectorAll('.poster-container').forEach(poster => {
+                poster.classList.remove('active');
+            });
+            document.getElementById(`poster-${index}`).classList.add('active');
+            currentPage = index;
+            updatePageIndicator();
+        }
+
+        function updatePageIndicator() {
+            document.querySelector('.page-indicator').textContent = `第 ${currentPage + 1} / ${totalPages} 页`;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                showPage(currentPage - 1);
+            }
+        }
+
+        async function exportAllImages() {
+            // 创建文件夹名称输入对话框
+            const folderName = prompt('请输入要创建的文件夹名称:', '海报导出_' + new Date().toLocaleDateString());
+            if (!folderName) return; // 用户取消操作
+            
+            try {
+                // 导出所有图片
+                for (let i = 0; i < totalPages; i++) {
+                    const poster = document.getElementById(`poster-${i}`);
+                    poster.style.display = 'block';
+                    const canvas = await html2canvas(poster);
+                    
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    link.download = `${folderName}_poster-${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    // 恢复显示状态
+                    if (i !== currentPage) {
+                        poster.style.display = 'none';
+                    }
+                }
+                alert(`导出完成！\n文件已保存到您的下载文件夹中，文件名格式为：${folderName}_poster-1.png, ${folderName}_poster-2.png 等`);
+            } catch (error) {
+                alert('导出过程中发生错误：' + error.message);
+            }
+        }
+
+        // 初始化页面
+        window.addEventListener('DOMContentLoaded', function() {
+            const pages = smartSplitContent(config.content);
+            totalPages = pages.length;
+            
+            // 创建所有页面
+            pages.forEach((content, index) => {
+                document.body.appendChild(createPosterPage(content, index));
+            });
+
+            // 创建控制按钮
+            const controls = document.createElement('div');
+            controls.className = 'controls';
+            controls.innerHTML = `
+                <button class="control-button" onclick="prevPage()">上一页</button>
+                <div class="page-indicator">第 1 / ${totalPages} 页</div>
+                <button class="control-button" onclick="nextPage()">下一页</button>
+                <button class="control-button" onclick="exportAllImages()">导出全部</button>
+            `;
+            document.body.appendChild(controls);
+        });
+    </script>
+</body>
+</html>
+
+
