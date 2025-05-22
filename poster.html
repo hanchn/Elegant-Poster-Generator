@@ -1,165 +1,220 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>精美海报</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f0f0f0;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f0f0f0;
+      }
 
+      .poster-container {
+        position: relative;
+        width: 800px;
+        height: 1200px;
+        margin: 20px auto;
+        overflow: hidden;
+        display: none;
+      }
+
+      .poster-container.active {
+        display: block;
+      }
+
+      .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        filter: blur(20px) brightness(0.5); /* 增加模糊度，降低亮度 */
+        transform: scale(1.1);
+      }
+
+      .content {
+        position: relative;
+        padding: 40px;
+        color: #ffffff;
+        height: calc(100% - 80px);
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 增强文字阴影 */
+      }
+
+      .title {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 0;
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8); /* 增强标题阴影效果 */
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .description {
+        font-size: 32px;
+        line-height: 1.8;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8); /* 增强文字阴影效果 */
+        text-align: left;
+        letter-spacing: 1px;
+        height: 100%;
+        overflow: hidden;
+        padding-bottom: 20px;
+        font-weight: 500; /* 增加字重 */
+      }
+
+      .highlight-box {
+        background-color: rgba(255, 255, 255, 0.08); /* 降低透明度 */
+        backdrop-filter: blur(25px); /* 增加毛玻璃效果 */
+        -webkit-backdrop-filter: blur(25px);
+        padding: 40px;
+        border-radius: 15px;
+        height: calc(100% - 40px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* 增强阴影效果 */
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .description {
+        font-size: 32px;
+        line-height: 1.8;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        text-align: left;
+        letter-spacing: 1px;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .highlight-box {
+        background-color: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 15px;
+        height: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .controls {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 10px 20px;
+        border-radius: 5px;
+        backdrop-filter: blur(5px);
+      }
+
+      .control-button {
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .control-button:hover {
+        background-color: #45a049;
+      }
+
+      /* 封面页样式 */
+      .cover-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        text-align: center;
+      }
+
+      .cover-title {
+        font-size: 72px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        line-height: 1.3;
+        text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.8);
+        padding: 0 40px;
+      }
+
+      .cover-subtitle {
+        font-size: 36px;
+        opacity: 0.9;
+        margin-top: 20px;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .cover-date {
+        font-size: 28px;
+        margin-top: 40px;
+        opacity: 0.8;
+        letter-spacing: 2px;
+      }
+
+      .cover-decoration {
+        width: 100px;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.8),
+          transparent
+        );
+        margin: 40px 0;
+        border-radius: 3px;
+      }
+
+      @media screen and (max-width: 768px) {
         .poster-container {
-            position: relative;
-            width: 800px;
-            height: 1200px;
-            margin: 20px auto;
-            overflow: hidden;
-            display: none;
-        }
-
-        .poster-container.active {
-            display: block;
-        }
-
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            filter: blur(20px) brightness(0.5);  /* 增加模糊度，降低亮度 */
-            transform: scale(1.1);
-        }
-
-        .content {
-            position: relative;
-            padding: 40px;
-            color: #ffffff;
-            height: calc(100% - 80px);
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);  /* 增强文字阴影 */
+          width: 100%;
+          height: auto;
+          aspect-ratio: 2/3;
         }
 
         .title {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 0;
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);  /* 增强标题阴影效果 */
-            text-align: center;
-            flex-shrink: 0;
+          font-size: 36px;
         }
 
         .description {
-            font-size: 32px;
-            line-height: 1.8;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);  /* 增强文字阴影效果 */
-            text-align: left;
-            letter-spacing: 1px;
-            height: 100%;
-            overflow: hidden;
-            padding-bottom: 20px;
-            font-weight: 500;  /* 增加字重 */
+          font-size: 24px;
         }
 
         .highlight-box {
-            background-color: rgba(255, 255, 255, 0.08);  /* 降低透明度 */
-            backdrop-filter: blur(25px);  /* 增加毛玻璃效果 */
-            -webkit-backdrop-filter: blur(25px);
-            padding: 40px;
-            border-radius: 15px;
-            height: calc(100% - 40px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);  /* 增强阴影效果 */
-            margin-bottom: 20px;
-            overflow: hidden;
+          padding: 20px;
         }
 
-        .description {
-            font-size: 32px;
-            line-height: 1.8;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            text-align: left;
-            letter-spacing: 1px;
-            flex: 1;
-            overflow: hidden;
+        .cover-title {
+          font-size: 48px;
         }
 
-        .highlight-box {
-            background-color: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 15px;
-            height: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .cover-subtitle {
+          font-size: 24px;
         }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 5px;
-            backdrop-filter: blur(5px);
-        }
-
-        .control-button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .control-button:hover {
-            background-color: #45a049;
-        }
-
-        @media screen and (max-width: 768px) {
-            .poster-container {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 2/3;
-            }
-            
-            .title {
-                font-size: 36px;
-            }
-            
-            .description {
-                font-size: 24px;
-            }
-
-            .highlight-box {
-                padding: 20px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        // 配置对象
-        const config = {
-            title: "5月21日 A股市场消息面播报",
-            content: `今天是2025年5月21日，星期三，A股延续震荡向上走势，三大指数全线收涨。上证指数上涨0.21%，收于3387点；深证成指上涨0.44%，报10294点；创业板指数涨幅0.83%，收在2058点，北证50继续走高，日内涨幅0.39%，再度刷新历史新高。
+      // 配置对象
+      const config = {
+        title: "A股市场消息面播报",
+        subtitle: "市场分析与热点追踪", // 添加副标题配置
+        content: `今天是2025年5月21日，星期三，A股延续震荡向上走势，三大指数全线收涨。上证指数上涨0.21%，收于3387点；深证成指上涨0.44%，报10294点；创业板指数涨幅0.83%，收在2058点，北证50继续走高，日内涨幅0.39%，再度刷新历史新高。
 
 市场成交维持高位，两市合计成交金额约1.21万亿元，资金轮动活跃，结构性机会仍然突出。
 
@@ -175,53 +230,93 @@
 
 宏观层面，央行LPR降息后，市场继续消化宽松预期。国家发改委与工信部明确将在6月底前集中落地一批"稳增长、稳就业"政策措施，覆盖制造业投资、消费补贴、数字经济和民营企业融资等方向，形成政策共振预期。
 
-总结来看，今日A股维持平稳震荡格局，固态电池、汽车、黄金、医药成为明确主线。短线操作建议顺应资金逻辑参与热点主线轮动，同时控制仓位，规避高位退潮题材的剧烈调整。`
-        };
+总结来看，今日A股维持平稳震荡格局，固态电池、汽车、黄金、医药成为明确主线。短线操作建议顺应资金逻辑参与热点主线轮动，同时控制仓位，规避高位退潮题材的剧烈调整。`,
+      };
 
-        // 智能分页函数
-        function smartSplitContent(text) {
-            const containerHeight = 1200; // 海报高度
-            const titleHeight = 100; // 标题区域高度
-            const padding = 80; // 上下内边距总和
-            const lineHeight = 1.8; // 行高
-            const fontSize = 32; // 字体大小
-            
-            // 计算每页可容纳的字符数
-            const availableHeight = containerHeight - titleHeight - padding;
-            const charsPerLine = Math.floor(720 / fontSize); // 考虑容器宽度和字体大小
-            const linesPerPage = Math.floor(availableHeight / (fontSize * lineHeight));
-            const charsPerPage = charsPerLine * linesPerPage;
+      // 智能分页函数
+      function smartSplitContent(text) {
+        const containerHeight = 1200; // 海报高度
+        const titleHeight = 100; // 标题区域高度
+        const padding = 80; // 上下内边距总和
+        const lineHeight = 1.8; // 行高
+        const fontSize = 32; // 字体大小
 
-            // 分割段落
-            const paragraphs = text.split('\n\n').filter(p => p.trim());
-            const pages = [];
-            let currentPage = [];
-            let currentLength = 0;
+        // 计算每页可容纳的字符数
+        const availableHeight = containerHeight - titleHeight - padding;
+        const charsPerLine = Math.floor(720 / fontSize); // 考虑容器宽度和字体大小
+        const linesPerPage = Math.floor(
+          availableHeight / (fontSize * lineHeight)
+        );
+        const charsPerPage = charsPerLine * linesPerPage;
 
-            paragraphs.forEach(paragraph => {
-                if (currentLength + paragraph.length > charsPerPage && currentPage.length > 0) {
-                    pages.push(currentPage.join('\n\n'));
-                    currentPage = [];
-                    currentLength = 0;
-                }
-                currentPage.push(paragraph);
-                currentLength += paragraph.length;
-            });
+        // 分割段落
+        const paragraphs = text.split("\n\n").filter((p) => p.trim());
+        const pages = [];
+        let currentPage = [];
+        let currentLength = 0;
 
-            if (currentPage.length > 0) {
-                pages.push(currentPage.join('\n\n'));
-            }
+        paragraphs.forEach((paragraph) => {
+          if (
+            currentLength + paragraph.length > charsPerPage &&
+            currentPage.length > 0
+          ) {
+            pages.push(currentPage.join("\n\n"));
+            currentPage = [];
+            currentLength = 0;
+          }
+          currentPage.push(paragraph);
+          currentLength += paragraph.length;
+        });
 
-            return pages;
+        if (currentPage.length > 0) {
+          pages.push(currentPage.join("\n\n"));
         }
 
-        // 创建海报页面
-        function createPosterPage(content, index) {
-            const poster = document.createElement('div');
-            poster.className = 'poster-container' + (index === 0 ? ' active' : '');
-            poster.id = `poster-${index}`;
-            
-            poster.innerHTML = `
+        return pages;
+      }
+
+      // 创建封面页
+      function createCoverPage() {
+        const poster = document.createElement("div");
+        poster.className = "poster-container active";
+        poster.id = "poster-cover";
+
+        // 提取日期信息
+        const dateMatch = config.content.match(/今天是(\d+年\d+月\d+日)/);
+        const dateText = dateMatch
+          ? dateMatch[1]
+          : new Date().toLocaleDateString("zh-CN", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+        // 提取星期信息
+        const weekdayMatch = config.content.match(/星期([一二三四五六日])/);
+        const weekdayText = weekdayMatch ? `星期${weekdayMatch[1]}` : "";
+
+        poster.innerHTML = `
+                <img src="bg.png" alt="背景图片" class="background">
+                <div class="content">
+                    <div class="cover-page">
+                        <div class="cover-title">${config.title}</div>
+                        <div class="cover-decoration"></div>
+                        <div class="cover-subtitle">${config.subtitle}</div>
+                        <div class="cover-date">${dateText} ${weekdayText}</div>
+                    </div>
+                </div>
+            `;
+
+        return poster;
+      }
+
+      // 创建内容页面
+      function createContentPage(content, index) {
+        const poster = document.createElement("div");
+        poster.className = "poster-container";
+        poster.id = `poster-${index}`;
+
+        poster.innerHTML = `
                 <img src="bg.png" alt="背景图片" class="background">
                 <div class="content">
                     <h1 class="title">${config.title}</h1>
@@ -230,91 +325,121 @@
                     </div>
                 </div>
             `;
-            
-            return poster;
+
+        return poster;
+      }
+
+      // 页面控制
+      let currentPage = 0;
+      let totalPages = 1;
+
+      function showPage(index) {
+        document.querySelectorAll(".poster-container").forEach((poster) => {
+          poster.classList.remove("active");
+        });
+
+        if (index === 0) {
+          document.getElementById("poster-cover").classList.add("active");
+        } else {
+          document
+            .getElementById(`poster-${index - 1}`)
+            .classList.add("active");
         }
 
-        // 页面控制
-        let currentPage = 0;
-        let totalPages = 1;
+        currentPage = index;
+        updatePageIndicator();
+      }
 
-        function showPage(index) {
-            document.querySelectorAll('.poster-container').forEach(poster => {
-                poster.classList.remove('active');
-            });
-            document.getElementById(`poster-${index}`).classList.add('active');
-            currentPage = index;
-            updatePageIndicator();
+      function updatePageIndicator() {
+        document.querySelector(".page-indicator").textContent = `第 ${
+          currentPage + 1
+        } / ${totalPages} 页`;
+      }
+
+      function nextPage() {
+        if (currentPage < totalPages - 1) {
+          showPage(currentPage + 1);
         }
+      }
 
-        function updatePageIndicator() {
-            document.querySelector('.page-indicator').textContent = `第 ${currentPage + 1} / ${totalPages} 页`;
+      function prevPage() {
+        if (currentPage > 0) {
+          showPage(currentPage - 1);
         }
+      }
 
-        function nextPage() {
-            if (currentPage < totalPages - 1) {
-                showPage(currentPage + 1);
+      async function exportAllImages() {
+        // 创建文件夹名称输入对话框
+        const folderName = prompt(
+          "请输入要创建的文件夹名称:",
+          "海报导出_" + new Date().toLocaleDateString()
+        );
+        if (!folderName) return; // 用户取消操作
+
+        try {
+          // 导出封面
+          const coverPoster = document.getElementById("poster-cover");
+          coverPoster.style.display = "block";
+          const coverCanvas = await html2canvas(coverPoster);
+
+          // 创建下载链接
+          const coverLink = document.createElement("a");
+          coverLink.download = `${folderName}_封面.png`;
+          coverLink.href = coverCanvas.toDataURL("image/png");
+          coverLink.click();
+
+          if (currentPage !== 0) {
+            coverPoster.style.display = "none";
+          }
+
+          // 导出内容页
+          for (let i = 0; i < totalPages - 1; i++) {
+            const poster = document.getElementById(`poster-${i}`);
+            poster.style.display = "block";
+            const canvas = await html2canvas(poster);
+
+            // 创建下载链接
+            const link = document.createElement("a");
+            link.download = `${folderName}_内容-${i + 1}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+
+            // 恢复显示状态
+            if (i !== currentPage - 1) {
+              poster.style.display = "none";
             }
+          }
+          alert(`导出完成！\n文件已保存到您的下载文件夹中`);
+        } catch (error) {
+          alert("导出过程中发生错误：" + error.message);
         }
+      }
 
-        function prevPage() {
-            if (currentPage > 0) {
-                showPage(currentPage - 1);
-            }
-        }
+      // 初始化页面
+      window.addEventListener("DOMContentLoaded", function () {
+        // 创建封面页
+        document.body.appendChild(createCoverPage());
 
-        async function exportAllImages() {
-            // 创建文件夹名称输入对话框
-            const folderName = prompt('请输入要创建的文件夹名称:', '海报导出_' + new Date().toLocaleDateString());
-            if (!folderName) return; // 用户取消操作
-            
-            try {
-                // 导出所有图片
-                for (let i = 0; i < totalPages; i++) {
-                    const poster = document.getElementById(`poster-${i}`);
-                    poster.style.display = 'block';
-                    const canvas = await html2canvas(poster);
-                    
-                    // 创建下载链接
-                    const link = document.createElement('a');
-                    link.download = `${folderName}_poster-${i + 1}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    
-                    // 恢复显示状态
-                    if (i !== currentPage) {
-                        poster.style.display = 'none';
-                    }
-                }
-                alert(`导出完成！\n文件已保存到您的下载文件夹中，文件名格式为：${folderName}_poster-1.png, ${folderName}_poster-2.png 等`);
-            } catch (error) {
-                alert('导出过程中发生错误：' + error.message);
-            }
-        }
+        // 创建内容页
+        const pages = smartSplitContent(config.content);
+        pages.forEach((content, index) => {
+          document.body.appendChild(createContentPage(content, index));
+        });
 
-        // 初始化页面
-        window.addEventListener('DOMContentLoaded', function() {
-            const pages = smartSplitContent(config.content);
-            totalPages = pages.length;
-            
-            // 创建所有页面
-            pages.forEach((content, index) => {
-                document.body.appendChild(createPosterPage(content, index));
-            });
+        // 设置总页数（封面 + 内容页）
+        totalPages = pages.length + 1;
 
-            // 创建控制按钮
-            const controls = document.createElement('div');
-            controls.className = 'controls';
-            controls.innerHTML = `
+        // 创建控制按钮
+        const controls = document.createElement("div");
+        controls.className = "controls";
+        controls.innerHTML = `
                 <button class="control-button" onclick="prevPage()">上一页</button>
                 <div class="page-indicator">第 1 / ${totalPages} 页</div>
                 <button class="control-button" onclick="nextPage()">下一页</button>
                 <button class="control-button" onclick="exportAllImages()">导出全部</button>
             `;
-            document.body.appendChild(controls);
-        });
+        document.body.appendChild(controls);
+      });
     </script>
-</body>
+  </body>
 </html>
-
-
